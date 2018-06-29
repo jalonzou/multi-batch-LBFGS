@@ -1,2 +1,4 @@
 # multi-batch-LBFGS
-This is an implementation of multi-batch L-BFGS algorithm which has been tested on CIFAR-10 dataset.
+This code is a implementation of a revolutionary optimizer for neural network training. Its full name is "Multi-batch L-BFGS Optimizer with CUDA". Nowadays well-known machine learning frameworks such as Tensorflow commonly provide "Gradient-based" optimizers (GradientDescent, AdaGrad) which function by computing gradients and applying them to the networks. 
+
+This code implement a cunstomized optimizer for Tensorflow which adopts "Multi-batch L-BFGS" algorithm (a variant of quasi-newton based algorithm), I overwrite Tensorflow's default implementation of optimizer and defined a Quasi-new way for gradient computation, which incorporates second order information and performs way better that the default optimizers. Furthermore, I optimize this optimizer by introducing CUDA technology. I distribute the computation steps on GPU. It improves the performance of the optimizer by at least 20%.

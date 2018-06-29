@@ -20,7 +20,7 @@ FLAGS = tf.app.flags.FLAGS
 
 tf.app.flags.DEFINE_string('log_dir', 'cifar10_log',
                            'Directory where to write event logs and checkpoint')
-tf.app.flags.DEFINE_integer('max_steps', 20, 'Number of batches to run')
+tf.app.flags.DEFINE_integer('max_steps', 21, 'Number of batches to run')
 tf.app.flags.DEFINE_boolean('log_device_placement', False, 'Whether to log device placement')
 
 
@@ -30,19 +30,19 @@ def step_callback(step, step_length, duration, loss_val, summary_func, saver, se
         examples_per_sec = num_examples_per_step / duration
         sec_per_batch = float(duration)
 
-        format_str = ('%s: step %d, loss = %.3f, duration = %.3f, next_step_length = %.3f (%.1f examples/sec; %.3f sec/batch)')
-        print(format_str % (datetime.now(), step, loss_val, duration, step_length, examples_per_sec, sec_per_batch))
+        format_str = ('%s: step %d, loss = %.3f, next_step_length = %.3f (%.1f examples/sec; %.3f sec/batch)')
+        print(format_str % (datetime.now(), step, loss_val, step_length, examples_per_sec, sec_per_batch))
 
     if step % 20 == 0:
         summary_func(step)
 
-    if step % 100 == 0 or (step + 1) == FLAGS.max_steps:
+    if step % 1000 == 0 or (step + 1) == FLAGS.max_steps:
         checkpoint_path = os.path.join(FLAGS.log_dir, 'model.ckpt')
         saver.save(session, checkpoint_path, global_step=step)
 
 
 def run_training():
-    with tf.Graph().as_default():
+    with tf.Graph().as_default(), tf.device('/cpu:0'):
         global_step = tf.Variable(0, trainable=False)
 
         images, labels = cifar10.distorted_inputs()
@@ -69,7 +69,9 @@ def run_training():
 
         init = tf.global_variables_initializer()
 
-        with tf.Session(config=tf.ConfigProto(log_device_placement=FLAGS.log_device_placement)) as sess:
+        with tf.Session(config=tf.ConfigProto(
+            allow_soft_placement=True, 
+            log_device_placement=FLAGS.log_device_placement)) as sess:
             sess.run(init)
 
             coordinator = tf.train.Coordinator()

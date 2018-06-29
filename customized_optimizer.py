@@ -140,12 +140,6 @@ class ExternalOptimizerInterface(object):
         else:
             revised_step_callback = None
 
-        # f_val, g_left, g_total, g_right = loss_grad_func(initial_packed_var_val)
-
-        # g_same = single_grad_func(initial_packed_var_val)
-
-        # return f_val, g_same
-
         packed_var_val = self._minimize(
             initial_val=initial_packed_var_val,
             loss_grad_func=loss_grad_func,
@@ -154,12 +148,7 @@ class ExternalOptimizerInterface(object):
             step_callback=revised_step_callback,
             optimizer_kwargs=self.optimizer_kwargs)
         return packed_var_val
-        # var_vals = [packed_var_val[packing_slice]
-        #             for packing_slice in self._packing_slices]
-
-        # session.run(self._var_updates,
-        #             feed_dict=dict(zip(self._update_placeholders, var_vals)),
-        #             **run_kwargs)
+        
 
     def _minimize(self,
                   initial_val,
